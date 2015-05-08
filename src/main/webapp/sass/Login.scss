@@ -1,0 +1,82 @@
+@import "compass/reset";
+@import "compass/css3";
+@import "compass/utilities/";
+*{
+	font-family: microsoft yahei;
+}
+body{
+	background-image: url("../img/bg-image.png");
+	background-repeat: no-repeat;
+	background-size: cover;
+	height: 100%;
+	.login{
+		width: 250px;
+		margin: 173px auto 0;
+		.img{
+			width: 48px;
+			margin: 0 auto;
+		}
+		form{
+			.form-group-user{
+				margin-top: 28px;
+				position: relative;
+				input{
+					width: 213px;
+					color: #fff;
+					padding-left: 35px;
+					border: 1px solid #7a7a7a;
+					background-color: #9e9e9a;
+					height: 36px;
+					line-height: 36px;
+					font-size: 21px;
+					outline:medium;
+					@include opacity(0.8);
+					@include box-shadow(0 0 1px #dfdfde);
+					@include border-radius(3px);
+					@include text-shadow(0 0 1px #bdbdbb);
+				}
+				img{
+					position: absolute;
+					top: 14px;
+					left: 14px;
+				}
+			}
+			.form-group-key{
+				margin-top: 15px;
+				position: relative;
+				input{
+					width: 213px;
+					color: #fff;
+					padding-left: 35px;
+					border: 1px solid #7a7a7a;
+					background-color: #9e9e9a;
+					height: 36px;
+					line-height: 36px;
+					font-size: 21px;
+					outline:medium;
+					@include opacity(0.8);
+					@include box-shadow(0 0 1px #dfdfde);
+					@include border-radius(3px);
+					@include text-shadow(0 0 1px #bdbdbb);
+				}
+				img{
+					position: absolute;
+					top: 14px;
+					left: 14px;
+				}
+			}
+			button{
+				margin-top: 15px;
+				height: 38px;
+				width: 250px;
+				color: #fff;
+				letter-spacing: .5em;
+				background-image: url("../img/button-bg.png");
+				border: none;
+				@include border-radius(3px);
+				@include box-shadow(0 0 0 1px #7a7a7a);
+				@include text-shadow(0 0 1px #bdbdbb);
+			}
+		}
+	}
+}

@@ -1,0 +1,15 @@
+*.class
+.settings/
+node_modules/
+.sass-cache/
+/target
+target/*
+*.scssc
+.idea/
+out/
+.DS_Store
+.FBCIndex
+
+.idea/*
+.idea/workspace.xml
+

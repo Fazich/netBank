@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="
+         http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+         http://www.springframework.org/schema/context
+         http://www.springframework.org/schema/context/spring-context-3.0.xsd
+         http://www.springframework.org/schema/aop
+         http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+         http://www.springframework.org/schema/tx
+         http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+
+    <!-- 数据源 -->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+          destroy-method="close">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://127.0.0.1:3306/bank"/>
+        <property name="username" value="root"/>
+        <property name="password" value="root"/>
+    </bean>
+
+    <!-- 配置sessionFactory -->
+    <bean id="sessionFactory"
+          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="packagesToScan" value="com.bank.domain"/>
+        <property name="mappingLocations" value="classpath*:hibernate.cfg.xml"/>
+        <!-- 实体类的包 -->
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+                <prop key="hibernate.show_sql">false</prop>
+                <!-- 会自动创表，但是不会自动创建数据库，所以要先手动创建数据库。 -->
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <prop key="hibernate.format_sql">true</prop>
+                <prop key="hibernate.current_session_context_class">
+                    org.springframework.orm.hibernate4.SpringSessionContext
+                </prop>
+                <prop key="hibernate.enable_lazy_load_no_trans">true</prop>
+            </props>
+        </property>
+
+    </bean>
+
+    <!-- 用于注入到GeneralDao中 -->
+    <bean id="hibernateTemplate" class="org.springframework.orm.hibernate4.HibernateTemplate">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <!-- 配置事务管理 -->
+    <bean id="transactionManager"
+          class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+
+    <!-- 支持 @AspectJ 标记-->
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
+
+
+    <!-- 支持 @Transactional 标记 -->
+    <tx:annotation-driven proxy-target-class="true" transaction-manager="transactionManager"/>
+    <!--<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>-->
+    <!--<bean class="org.springframework.transaction.interceptor.TransactionAttributeSourceAdvisor">-->
+    <!--<property name="transactionInterceptor" ref="transactionInterceptor"/>-->
+    <!--</bean>-->
+    <!--<bean id="transactionInterceptor" class="org.springframework.transaction.interceptor.TransactionInterceptor">-->
+    <!--<property name="transactionManager" ref="transactionManager"/>-->
+    <!--<property name="transactionAttributeSource">-->
+    <!--<bean class="org.springframework.transaction.annotation.AnnotationTransactionAttributeSource"/>-->
+    <!--</property>-->
+    <!--</bean>-->
+    <!--<tx:advice id="txAdvice" transaction-manager="transactionManager">-->
+    <!--<tx:attributes>&lt;!&ndash; 指定哪些方法需要加入事务  &ndash;&gt;-->
+    <!--<tx:method name="save*" propagation="REQUIRED"/>-->
+    <!--<tx:method name="delete*" propagation="REQUIRED"/>-->
+    <!--<tx:method name="update*" propagation="REQUIRED"/>-->
+    <!--&lt;!&ndash; read-only="true"：其余方法只读格式，加强其安全性 &ndash;&gt;-->
+    <!--<tx:method name="*" read-only="true" propagation="NOT_SUPPORTED"/>-->
+    <!--</tx:attributes>-->
+    <!--</tx:advice>-->
+
+
+    <!-- transaction confige -->
+    <!--
+        作用：开启对@Transactional注解的加工处理,以织入事务管理切面
+        <tx:annotation-driven>属性说明：
+        (1):属性transaction-manager：指定事务管理器名字，默认为transactionManager，当使用其他名字时需要明确指定
+        (2):proxy-target-class: 如果为true，Spring将通过创建子类来代理业务类；
+                                如果为false（默认），则使用基于接口来代理。
+                                (ps:如果使用子类代理,需要在类路径中添加CGLib.jar类库)
+        (3):order：如果业务类除事务切面外，还需要织入其它的切面（或者多个事务切面），通过该属性来控制切面在目标连接点的织入顺序
+    -->
+    <!--<tx:annotation-driven transaction-manager="txManager" proxy-target-class="true" />-->
+
+    <!--proxy-target-class：默认false表示使用JDK代理，如果为true将使用CGLIB代理-->
+    <!-- 使用CGLIB的话需要加上aspectjrt和aspectjweaver 的jar-->
+
+
+    <!-- 对于cobar对数据源的时候我们用这个 -->
+    <!--<bean id="txManager" class="com.alibaba.cobar.client.transaction.MultipleDataSourcesTransactionManager">
+        <property name="cobarDataSourceService" ref="dataSources" />
+    </bean>-->
+    <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"></property>
+    </bean>
+</beans>
